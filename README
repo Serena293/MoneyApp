@@ -1,0 +1,5 @@
+Bank Statement Analyzer
+A Python application to process bank statements and track personal spending habits.
+
+Description
+This is my first Python project - a personal finance tool that analyzes bank statements to provide insights into spending patterns. The application helps users understand where their money goes by categorizing and visualizing transactions.

@@ -20,7 +20,7 @@ def test_starbucks():
     assert result == "eating_out"
 
 def test_unknown():
-    result = categorize_transaction("Negozio Sconosciuto", categories)
+    result = categorize_transaction("Random Shop", categories)
     assert result == "Uncategorized"
 
 

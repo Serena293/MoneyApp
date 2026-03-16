@@ -5,6 +5,8 @@ import os
 import csv
 from datetime import datetime
 import dotenv
+import sys
+import matplotlib.pyplot as plt
 
 # Load categories configuration
 config_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'categories.json')
@@ -54,7 +56,7 @@ def analyze_monthly_spending(df, month):
             print(f"  ... and {len(uncategorized) - 5} more")
 
 def process_bank_statements(path):
-    """Process all bank statement CSV files in the given path"""
+    """Process all bank statement CSV files in a folder"""
     
     # Get all CSV files
     files_list = os.listdir(path)
@@ -162,22 +164,52 @@ def process_bank_statements(path):
         percentage = (amount / grand_total) * 100
         print(f"- {category}: £{amount:.2f} ({percentage:.1f}%)")
     
+    if combined_df is not None and len(combined_df) > 0:
+        output_path = os.path.join(os.path.dirname(__file__), "processed_transactions.csv")
+        combined_df.to_csv(output_path, index=False)
+        print(f"\nProcessed data saved to: {output_path}")
+    
     return combined_df
+def plot_category_spending(df, output_path=None):
+    """Create a bar chart of spending per category"""
+    if df is None or len(df) == 0:
+        return
+    
+    category_totals = df.groupby('Category')['Positive_Amount'].sum()
+    category_totals = category_totals.sort_values(ascending=False)
+    
+    plt.figure(figsize=(10,6))
+    category_totals.plot(kind='bar', color='skyblue')
+    plt.title("Spending by Category")
+    plt.ylabel("Amount (£)")
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    
+    if output_path:
+        plt.savefig(output_path)
+        print(f"Category spending chart saved to: {output_path}")
+    else:
+        plt.show()
 
 if __name__ == "__main__":
     dotenv.load_dotenv()
-    bank_statements_path = os.getenv("BANK_STATEMENTS_PATH")
-    if bank_statements_path:
-        if not os.path.exists(bank_statements_path):
-            print(f"Error: Path does not exist: {bank_statements_path}")
-        else:
-            print(f"Loading bank statements from: {bank_statements_path}")
-            result_df = process_bank_statements(bank_statements_path)
-            
-            #  Save processed data to CSV
-            # if result_df is not None:
-            #     output_path = os.path.join(os.path.dirname(__file__), "processed_transactions.csv")
-            #     result_df.to_csv(output_path, index=False)
-            #     print(f"\nProcessed data saved to: {output_path}")
-    else:
-        raise ValueError("BANK_STATEMENTS_PATH environment variable is not set.")
+
+    # Use command-line argument if provided, else fall back to environment variable
+    bank_statements_path = sys.argv[1] if len(sys.argv) > 1 else os.getenv("BANK_STATEMENTS_PATH")
+
+    if not bank_statements_path:
+        raise ValueError("No path provided. Use an argument or set BANK_STATEMENTS_PATH.")
+
+    bank_statements_path = os.path.abspath(bank_statements_path)
+
+    if not os.path.exists(bank_statements_path):
+        print(f"Error: Path does not exist: {bank_statements_path}")
+        sys.exit(1)
+
+    print(f"Loading bank statements from: {bank_statements_path}")
+    process_bank_statements(bank_statements_path)
+    combined_df = process_bank_statements(bank_statements_path)
+
+    # Save chart
+    chart_path = os.path.join(os.path.dirname(__file__), "category_spending.png")
+    plot_category_spending(combined_df, chart_path)

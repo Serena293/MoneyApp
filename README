@@ -1,5 +1,99 @@
-Bank Statement Analyzer
-A Python application to process bank statements and track personal spending habits.
+# 💰 Bank Statement Analyser
 
-Description
-This is my first Python project - a personal finance tool that analyzes bank statements to provide insights into spending patterns. The application helps users understand where their money goes by categorizing and visualizing transactions.
+A Python application that processes bank statement CSV files, categorises transactions, and provides spending insights with summaries and visualisations.
+
+---
+
+## 🚀 Features
+
+- Parse CSV bank statements
+- Filter outgoing transactions
+- Categorise transactions using configurable rules (JSON)
+- Monthly and overall spending analysis
+- Export processed data to CSV
+- Generate category spending charts
+
+---
+
+## 🛠️ Tech Stack
+
+- Python
+- Pandas
+- Matplotlib
+- Pytest
+- JSON
+
+---
+
+## 📂 Project Structure
+
+```
+MoneyApp/
+│
+├── src/
+│   ├── main.py
+│   ├── processed_transactions.csv
+│   └── category_spending.png
+│
+├── tests/
+│   ├── test_categorization.py
+│   └── test-data/
+│       └── sample_statement.csv
+│
+├── config/
+│   └── categories.json
+│
+├── requirements.txt
+└── README
+```
+
+---
+
+## ▶️ How to Run
+
+1. Activate your virtual environment:
+
+```bash
+source myenv/Scripts/activate   # Windows (Git Bash)
+```
+
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Run the application:
+
+```bash
+python src/main.py tests/test-data
+```
+
+---
+
+## 📊 Output
+
+The program generates:
+
+- Console summary of spending
+- `processed_transactions.csv` (cleaned data)
+- `category_spending.png` (visual chart)
+
+---
+
+## 🧪 Testing
+
+Run tests using:
+
+```bash
+pytest
+```
+
+---
+
+## 🔧 Future Improvements
+
+- Improve categorisation logic (e.g. regex or ML-based)
+- Increase test coverage
+- Add API integration for live bank data
+- Build a simple web interface
